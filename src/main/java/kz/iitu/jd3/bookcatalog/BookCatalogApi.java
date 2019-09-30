@@ -29,7 +29,7 @@ public class BookCatalogApi {
 
         // get all books by userId
         UserBook  userBook = restTemplate.getForObject(
-                "http://localhost:8082/book/info/" + userId,
+                "http://book-info-service/book/info/" + userId,
                 UserBook.class);
 
         // get ratings for each book in a list
@@ -40,7 +40,7 @@ public class BookCatalogApi {
 
         for (Book book : userBook.getUserBooks()) {
             Rating bookRating = restTemplate.getForObject(
-                    "http://localhost:8083/rating/" + book.getId(),
+                    "http://book-ratings-service/rating/" + book.getId(),
                     Rating.class);
 
             bookCatalogList.add(new BookCatalog(book.getTitle(),
