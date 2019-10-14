@@ -1,5 +1,6 @@
 package kz.iitu.jd3.bookcatalog;
 
+import com.netflix.hystrix.contrib.javanica.annotation.HystrixCommand;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -22,6 +23,8 @@ public class BookCatalogApi {
     private RestTemplate restTemplate;
 
     @GetMapping("/{userId}")
+
+    @HystrixCommand(fallbackMethod = "getAllBooksFallback")
     public List<BookCatalog> getAllBooks(
             @PathVariable String userId) {
 
@@ -46,6 +49,15 @@ public class BookCatalogApi {
             bookCatalogList.add(new BookCatalog(book.getTitle(),
                     book.getAuthor(), bookRating.getRating()));
         }
+
+        return bookCatalogList;
+    }
+
+    public List<BookCatalog> getAllBooksFallback(
+            @PathVariable String userId) {
+
+        List<BookCatalog> bookCatalogList = new ArrayList<>();
+        bookCatalogList.add(new BookCatalog("Not available", "Not available", -1));
 
         return bookCatalogList;
     }
